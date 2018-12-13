@@ -18,8 +18,8 @@ def instances():
     """ Commands For instances """
 
 @instances.command('list')
-@click.option('--Project', default=None,
-help="Only instances for project(tag Project:<name>)")
+@click.option('--project', default=None,
+ help="Only instances for project(tag Project:<name>)")
 
 def list_instances(project):
     "List EC2 instances"
@@ -29,18 +29,18 @@ def list_instances(project):
     for i in instances:
         tags = {t['Key'] : t['Value'] for t in i.tags or []}
         print(', '.join((
-        i.id,
-        i.instancetype,
-        i.placement['AvailabilityZone'],
-        i.state['Name'],
-        i.public_dns_name,
-        tags.get('Project', '<no project>')
-        )))
+            i.id,
+            i.instancetype,
+            i.placement['AvailabilityZone'],
+            i.state['Name'],
+            i.public_dns_name,
+            tags.get('Project', '<no project>')
+            )))
     return
 
 @instances.command('start')
-@click.option('--Project', default=None,
-help="Only instances for project")
+@click.option('--project', default=None,
+    help="Only instances for project")
 
 def start_instances(project):
     "Start EC2 instances"
@@ -49,22 +49,22 @@ def start_instances(project):
 
     for i in instances:
         print("Starting {0}...", format(i.id))
-        i.stop()
+        i.start()
     return
 
-    @instances.command('stop')
-    @click.option('--Project', default=None,
+@instances.command('stop')
+@click.option('--project', default=None,
     help="Only instances for project")
 
-    def stop_instances(project):
-        "Stop EC2 instances"
+def stop_instances(project):
+    "Stop EC2 instances"
 
-        instances = filter_instances(project)
+    instances = filter_instances(project)
 
-        for i in instances:
-            print("Stopping {0}...", format(i.id))
-            i.stop()
-        return
+    for i in instances:
+        print("Stopping {0}...", format(i.id))
+        i.stop()
+    return
 
 if __name__ == '__main__':
     instances()
