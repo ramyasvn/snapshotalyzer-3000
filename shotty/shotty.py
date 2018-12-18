@@ -26,7 +26,7 @@ def snapshots():
 @click.option('--project', default=None,
      help="Only snapshots for project(tag Project:<name>)")
 
-def list_volumes(project):
+def list_snapshots(project):
     "List EC2 snapshots"
 
     instances = filter_instances(project)
@@ -113,13 +113,13 @@ def list_instances(project):
     for i in instances:
         tags = {t['Key'] : t['Value'] for t in i.tags or []}
         print(', '.join((
-            i.id,
-            i.instancetype,
-            i.placement['AvailabilityZone'],
-            i.state['Name'],
-            i.public_dns_name,
-            tags.get('Project', '<no project>')
-            )))
+        i.id,
+        i.instancetype,
+        i.placement['AvailabilityZone'],
+        i.state['Name'],
+        i.public_dns_name,
+        tags.get('Project', '<no project>')
+        )))
     return
 
 @instances.command('start')
