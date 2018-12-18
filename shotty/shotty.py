@@ -14,6 +14,10 @@ def filter_instances(project):
         instances = ec2.instances.all()
     return instances
 
+def has_pending_snapshot(volume):
+    snapshots = list(volume.snapshots.all())
+    return snapshots and snapshots[0].state == 'pending'
+
 @click.group()
 def cli():
     """Shotty manages snapshots"""
@@ -86,7 +90,9 @@ def create_snapshots(project):
     instances = filter_instances(project)
 
     for i in instances:
-
+        if has_pending_snapshot(v):
+            print("  Skipping {0}, snapshot already in progress".format(v.id))
+            continue
         print("Stopping {0}...".format(i.id))
         i.stop()
         i.wait_until_stopped()
